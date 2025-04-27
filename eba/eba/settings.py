@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'users',
 ]
@@ -54,7 +57,35 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
 ]
 
+REST_FRAMEWORK = {
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=15),
+    
+    "ALGORITHM": "HS256",
+    "VERIFYING_KEY": "",
+    "LEEWAY": 0,
+    
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+   'AUTH_HEADER_TYPES': ('JWT',),
+}
+
 ROOT_URLCONF = 'eba.urls'
+
+AUTH_USER_MODEL ='users.User'
 
 TEMPLATES = [
     {

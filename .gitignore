@@ -7,3 +7,4 @@ venv/
 **/migrations/*.pyc
 **/migrations/*.py
 .vscode
+**/db.sqlite3
