@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 from .serializers import UserRegistrationSerializer,UserLoginSerializer
 from .models import User
+
 class UserRegistraion(APIView):
 
     permission_classes = [AllowAny]

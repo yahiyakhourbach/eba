@@ -37,7 +37,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         if not numbers.search(attrs["password"]) or \
             not contain_letter.search(attrs["password"]) or \
             not special_chars.search(attrs["password"]):
-                errors["password"] = "password should contain at least 8 characters one digit and one special character and a letter"
+                errors["password"] = "password should contain at \
+                    least 8 characters one digit and one special \
+                    character and a letter"
 
         if errors:
              raise serializers.ValidationError(errors)

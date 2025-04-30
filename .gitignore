@@ -8,3 +8,5 @@ venv/
 **/migrations/*.py
 .vscode
 **/db.sqlite3
+readme
+database
