@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'users',
-    'booking_events'
+    'events',
+    'booking'
 ]
 
 MIDDLEWARE = [
