@@ -1,12 +1,12 @@
-from django.shortcuts import render
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.gis.geos import Point
 from rest_framework.views import APIView
-from .serializers import EventSerializer
+from .serializers import EventSerializer,regularEventSerializer
 from users.permissions import IsModerator
 from .models import Event
+
 # Create your views here.
 
 
@@ -20,7 +20,7 @@ class GetEvents(APIView):
                 event =  Event.objects.get(id=id)
             except Event.DoesNotExist:
                 return Response({"error":"event not found"},status= status.HTTP_404_NOT_FOUND)
-            serializer = EventSerializer(event)
+            serializer = regularEventSerializer(event,context={'request':request})
             return Response(serializer.data,status=status.HTTP_200_OK)
         else:
             events = Event.objects.all();
@@ -29,12 +29,11 @@ class GetEvents(APIView):
 
 class ManageEvents(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsModerator]
 
     def get(self, request, id = None):
 
         if id:
-
             try:
                 event = Event.objects.get(id = id,user=request.user.id)
             except Event.DoesNotExist:

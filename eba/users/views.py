@@ -16,7 +16,7 @@ class UserRegistraion(APIView):
             'first_name':request.data.get("firstname"),
             'last_name':request.data.get("lastname"),
             'email':request.data.get("email"),
-            'is_moderator':request.data.get("is_moderator"),
+            'is_moderator':request.data.get("isModerator"),
             'password':request.data.get("password"),
             'password2':request.data.get("password2"),
         }

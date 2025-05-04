@@ -26,7 +26,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             errors["password"] = "password mismatch"
         
         if len(attrs.get("username")) < 5 or white_space.search(attrs.get("username")):
-            errors["username"] = "username too short"
+            errors["username"] = "username too short or it contain spaces"
 
         if  not valid_string.match(attrs["first_name"]):
              errors["first_name"] = "firstname should contain only letters"
@@ -60,14 +60,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     
 class UserLoginSerializer(serializers.ModelSerializer):
 
-    email       = serializers.EmailField(max_length=150,write_only = True)
-    password    = serializers.CharField(max_length=255,write_only = True)
-    access      = serializers.CharField(max_length=255,read_only = True)
-    refresh     = serializers.CharField(max_length=255,read_only = True)
-    username    = serializers.CharField(max_length=255,read_only = True)
+    email           = serializers.EmailField(max_length=150,write_only = True)
+    password        = serializers.CharField(max_length=255,write_only = True)
+    access          = serializers.CharField(max_length=255,read_only = True)
+    refresh         = serializers.CharField(max_length=255,read_only = True)
+    is_moderator    = serializers.BooleanField(default=False)
     class Meta:
         model = User
-        fields = ["email","username","access","refresh","password"]
+        fields = ["email","is_moderator","access","refresh","password"]
 
     def validate(self,attrs):
         email       = attrs.get("email")
@@ -83,7 +83,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         
         refresh  = RefreshToken.for_user(user)
         return {
-                "username":user.username,
+                "is_moderator":user.is_moderator,
                 "refresh": str(refresh),
                 "access": str(refresh.access_token)
             }

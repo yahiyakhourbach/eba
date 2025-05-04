@@ -31,12 +31,21 @@ class ManageBooking(APIView):
             event = Event.objects.get(id=request.data["event"])
         except Event.DoesNotExist:
             return Response({"error":"event doesn't exist"},status = status.HTTP_404_NOT_FOUND)
+        
+        booking = Booking.objects.filter(user=request.user.id,event=request.data["event"]).exists()
+        if booking:
+            return Response({"error":"you already booked this event"},status = status.HTTP_409_CONFLICT)
+
+        if event.nbr_reserved >= event.capacity:
+            return Response({"error":"Event is full try later"},status = status.HTTP_409_CONFLICT)
 
         booking_data = request.data.copy()
         booking_data["user"] = request.user.id
         serializer = BookingSerializer(data=booking_data)
 
         if serializer.is_valid():
+            event.nbr_reserved += 1
+            event.save()
             serializer.save()
             return Response(serializer.data,status = status.HTTP_201_CREATED)
         return Response(serializer.errors,status = status.HTTP_400_BAD_REQUEST)
@@ -49,8 +58,7 @@ class ManageBooking(APIView):
         booking = Booking.objects.filter(user=request.user.id, event=id).first()
         if booking is None:
             return Response({"error":"not found"},status = status.HTTP_404_NOT_FOUND)
-        
-        print(booking)
+    
         booking.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
