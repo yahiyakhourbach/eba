@@ -53,7 +53,7 @@ class ManageBooking(APIView):
     def delete(self, request, id=None):
         
         if id is None:
-            return Response({"error":"message error"}, status = status.HTTP_400_BAD_REQUEST)
+            return Response({"error":"your id is None"}, status = status.HTTP_400_BAD_REQUEST)
 
         booking = Booking.objects.filter(user=request.user.id, event=id).first()
         if booking is None:

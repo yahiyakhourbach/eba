@@ -12,3 +12,7 @@ class Event(models.Model):
     location        = geomodels.PointField()
     nbr_reserved    = models.IntegerField(default=0)
     capacity        = models.IntegerField(default=0)
+    country         = models.CharField(max_length=255,null=False)
+    city            = models.CharField(max_length=255,null=False)
+    street          = models.CharField(max_length=255,null=False)
+    zipcode         = models.CharField(max_length=20,null=False)

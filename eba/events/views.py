@@ -14,6 +14,14 @@ class GetEvents(APIView):
 
     permission_classes = [IsAuthenticated]
     def get(self, request, id=None):
+        search = request.GET.get("search",'')
+        print("search :",search)
+        if search:
+            event = Event.objects.filter(title__icontains=search)
+            if event.exists():
+                serializer = regularEventSerializer(event,context={'request':request},many=True)
+                return Response(serializer.data,status=status.HTTP_200_OK)
+            return Response({"error":"event not found"},status= status.HTTP_404_NOT_FOUND)
 
         if id:
             try:
