@@ -4,18 +4,21 @@ from .models import Event
 
 class EventSerializer(serializers.ModelSerializer):
 
-    location = serializers.SerializerMethodField()
     class Meta:
         model= Event
         fields = "__all__"
     
-    def get_location(self,obj):
-        if obj.location:
-            return {
-                "lng": obj.location.x,
-                "lat": obj.location.y
+    def to_representation(self,instance):
+
+        data = super().to_representation(instance)
+        if instance.location:
+            data["location"] = {
+                "lng": instance.location.x,
+                "lat": instance.location.y
             }
-        return None
+        else:
+            data["location"] = None
+        return data
 
 class regularEventSerializer(serializers.ModelSerializer):
 

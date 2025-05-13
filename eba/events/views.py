@@ -45,7 +45,7 @@ class ManageEvents(APIView):
             try:
                 event = Event.objects.get(id = id,user=request.user.id)
             except Event.DoesNotExist:
-                return Response({"error" :"event doesn't exist"},status=status.HTTP_404_NOT_FOUND)
+                return Response({"details" :"event doesn't exist"},status=status.HTTP_404_NOT_FOUND)
 
             serializer = EventSerializer(event)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -58,7 +58,7 @@ class ManageEvents(APIView):
     def post(self, request,id=None):
 
         if id is not None:
-            return Response({"detail" : "POST request should not inlcude an ID"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail" : "POST request should not include an ID"}, status=status.HTTP_400_BAD_REQUEST)
 
         lat = request.data["location"]['lat']
         lng = request.data["location"]['lng']
@@ -69,10 +69,14 @@ class ManageEvents(APIView):
             "title":request.data["title"],
             "description":request.data["description"],
             "capacity":request.data["capacity"],
+            "country":request.data["country"],
+            "city":request.data["city"],
+            "street":request.data["street"],
+            "zipcode":request.data["zipcode"],
             "date" : request.data["date"],
             "location":point
         }
-
+        print("this is the data : ",event_data)
         serializer = EventSerializer(data = event_data)
         if serializer.is_valid():
             serializer.save()
@@ -88,12 +92,12 @@ class ManageEvents(APIView):
         try:
             event = Event.objects.get(id = id, user = request.user.id)
         except Event.DoesNotExist:
-            return Response({"error":"event not found"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"details":"event not found"},status=status.HTTP_404_NOT_FOUND)
         
         event_data = None
         if 'location' in request.data:
             lng = request.data['location']['lng']
-            lat = request.data['location']['lng']
+            lat = request.data['location']['lat']
             point = Point(float(lng),float(lat))
             event_data = request.data.copy()
             event_data['location'] = point
@@ -109,10 +113,9 @@ class ManageEvents(APIView):
         if id is None:
             return Response({"error" : "missing id"},status=status.HTTP_400_BAD_REQUEST)
 
-        
         event = Event.objects.filter(id=id, user = request.user.id).first()
         if event is None:
-            return Response({"error":"event doesn't exist"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"details":"event doesn't exist"},status=status.HTTP_404_NOT_FOUND)
         
         event.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

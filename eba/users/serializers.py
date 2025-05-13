@@ -65,9 +65,10 @@ class UserLoginSerializer(serializers.ModelSerializer):
     access          = serializers.CharField(max_length=255,read_only = True)
     refresh         = serializers.CharField(max_length=255,read_only = True)
     is_moderator    = serializers.BooleanField(default=False)
+    username        = serializers.CharField(max_length=255,read_only = True)
     class Meta:
         model = User
-        fields = ["email","is_moderator","access","refresh","password"]
+        fields = ["email","is_moderator","access","username","refresh","password"]
 
     def validate(self,attrs):
         email       = attrs.get("email")
@@ -85,5 +86,6 @@ class UserLoginSerializer(serializers.ModelSerializer):
         return {
                 "is_moderator":user.is_moderator,
                 "refresh": str(refresh),
-                "access": str(refresh.access_token)
+                "access": str(refresh.access_token),
+                "username" :user.username
             }
